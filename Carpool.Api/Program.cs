@@ -1,3 +1,4 @@
+using Carpool.BLL;
 using Carpool.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddBusinessLayer();
 builder.Services.AddDataAccessLayer(builder.Configuration);
 
 var app = builder.Build();

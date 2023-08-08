@@ -8,7 +8,7 @@ namespace Carpool.DAL
     {
         public static IServiceCollection AddDataAccessLayer(this IServiceCollection services, IConfiguration configuration)
         {
-            //services.AddSingleton<IConnectionMultiplexer>(opt => ConnectionMultiplexer.Connect())
+            services.AddSingleton<IConnectionMultiplexer>(opt => ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")));
 
             return services;
         }
