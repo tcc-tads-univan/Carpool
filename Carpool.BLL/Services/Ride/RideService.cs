@@ -1,8 +1,7 @@
-﻿using Carpool.BLL.Services.RideHandler.Models;
-using Carpool.DAL.Domain;
+﻿using Carpool.BLL.Services.Ride.Models;
 using Carpool.DAL.Persistence.Redis.Interfaces;
 
-namespace Carpool.BLL.Services.RideHandler
+namespace Carpool.BLL.Services.Ride
 {
     public class RideService : IRideService
     {
@@ -16,7 +15,7 @@ namespace Carpool.BLL.Services.RideHandler
         {
             //CallService
 
-            Ride ride = new Ride()
+            DAL.Domain.Ride ride = new DAL.Domain.Ride()
             {
                 StudentId = 1,
                 StudentName = "Mateus",

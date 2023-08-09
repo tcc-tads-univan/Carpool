@@ -8,7 +8,7 @@ namespace Carpool.DAL.Persistence.Relational.Context
         public CarpoolContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<CarpoolContext>();
-            //Arrumar
+            optionsBuilder.UseSqlServer("");
             return new CarpoolContext(optionsBuilder.Options);
         }
     }

@@ -1,5 +1,5 @@
 ﻿
-namespace Carpool.BLL.Services.RideHandler.Models
+namespace Carpool.BLL.Services.Ride.Models
 {
     public record RideCreateCommand
     {

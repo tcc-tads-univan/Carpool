@@ -1,5 +1,5 @@
 ﻿using Carpool.Api.Contracts.Ride;
-using Carpool.BLL.Services.RideHandler;
+using Carpool.BLL.Services.Ride;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Carpool.Api.Controllers

@@ -1,6 +1,6 @@
-﻿using Carpool.BLL.Services.RideHandler.Models;
+﻿using Carpool.BLL.Services.Ride.Models;
 
-namespace Carpool.BLL.Services.RideHandler
+namespace Carpool.BLL.Services.Ride
 {
     public interface IRideService
     {
