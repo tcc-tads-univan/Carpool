@@ -2,12 +2,10 @@
 
 namespace Carpool.Api.Contracts.Ride
 {
-    public record RideRequest
+    public record RouteRequest
     {
         [Required]
-        public String ScheduledTime { get; set; }
-        [Required]
-        public int CampusId { get; set; }
+        public int DriverId { get; set; }
         [Required]
         public int StudentId { get; set; }
     }

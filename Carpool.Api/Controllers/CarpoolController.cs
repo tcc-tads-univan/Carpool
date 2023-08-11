@@ -15,7 +15,7 @@ namespace Carpool.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRideRequest(RideRequest rideRequest)
+        public async Task<IActionResult> CreateRideRequest(RideCreateRequest rideCreateRequest)
         {
             await Task.CompletedTask;
             //Mapping rideRequest to rideCommand
@@ -25,5 +25,22 @@ namespace Carpool.Api.Controllers
             //Call rideRepository to save
             return Ok();
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteRideRequest(RideDeleteRequest rideDeleteRequest)
+        {
+            //await _rideService.CancelStudentRideRequest();
+            await Task.CompletedTask;
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CalculateRideRoute(RouteRequest routeRequest)
+        {
+            await Task.CompletedTask;
+            return Ok();
+        }
+
+
     }
 }

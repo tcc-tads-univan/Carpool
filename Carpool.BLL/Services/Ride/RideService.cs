@@ -11,6 +11,16 @@ namespace Carpool.BLL.Services.Ride
             _rideRepository = rideRepository;
         }
 
+        public Task CalculateRideRoute()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task CancelStudentRideRequest(RideDeleteCommand rideDeleteCommand)
+        {
+            await _rideRepository.DeleteRideRequest(rideDeleteCommand.CampusId, rideDeleteCommand.StudentId);
+        }
+
         public async Task CreateStudentRideRequest(RideCreateCommand rideCreateCommand)
         {
             //CallService

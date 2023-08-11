@@ -1,8 +1,7 @@
 ﻿namespace Carpool.BLL.Services.Ride.Models
 {
-    public record RideCreateCommand
+    public record RideDeleteCommand
     {
-        public String ScheduledTime { get; set; }
         public int CampusId { get; set; }
         public int StudentId { get; set; }
     }
