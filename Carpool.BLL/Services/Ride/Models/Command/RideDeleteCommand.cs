@@ -1,4 +1,4 @@
-﻿namespace Carpool.BLL.Services.Ride.Models
+﻿namespace Carpool.BLL.Services.Ride.Models.Command
 {
     public record RideDeleteCommand
     {

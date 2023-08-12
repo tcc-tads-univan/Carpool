@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Carpool.Api.Contracts.Ride
+namespace Carpool.Api.Contracts.Ride.Request
 {
     public record RouteRequest
     {

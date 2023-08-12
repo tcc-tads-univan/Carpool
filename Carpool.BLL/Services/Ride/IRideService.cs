@@ -1,17 +1,14 @@
-﻿using Carpool.BLL.Services.Ride.Models;
+﻿using Carpool.BLL.Services.Ride.Models.Command;
+using Carpool.BLL.Services.Ride.Models.Result;
 
 namespace Carpool.BLL.Services.Ride
 {
     public interface IRideService
     {
         Task CreateStudentRideRequest(RideCreateCommand rideCreateCommand);
-
         Task CancelStudentRideRequest(RideDeleteCommand rideDeleteCommand);
-
         Task CalculateRideRoute();
-
-        //Task<IEnumerable<RideResponse>> GetAllRideRequestsByCampus();
-
-        //Task<RideResponse> GetRideRequestByStudent();
+        Task<IEnumerable<RideResult>> GetAllRideRequestsByCampus(int campusId);
+        Task<RideStudentResult> GetRideRequestByStudent(int studentId);
     }
 }
