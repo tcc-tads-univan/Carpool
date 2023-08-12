@@ -35,7 +35,7 @@ namespace Carpool.Api.Controllers
         {
             var command = _mapper.Map<RideDeleteCommand>(rideDeleteRequest);
             await _rideService.CancelStudentRideRequest(command);
-            return Ok();
+            return NoContent();
         }
 
         [HttpPost]

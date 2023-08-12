@@ -2,7 +2,7 @@
 {
     public record RideCreateCommand
     {
-        public string ScheduledTime { get; set; }
+        public string ScheduleTime { get; set; }
         public int CampusId { get; set; }
         public int StudentId { get; set; }
     }

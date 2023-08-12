@@ -26,9 +26,9 @@ namespace Carpool.BLL.Services.Ride
 
         public async Task CreateStudentRideRequest(RideCreateCommand rideCreateCommand)
         {
-            //CallService
+            //CallService student
 
-            //Get CampusInformation from DB _campusRepositor
+            //Get CampusInformation from DB _campusRepository
 
             DAL.Domain.Ride ride = new DAL.Domain.Ride()
             {
@@ -40,7 +40,7 @@ namespace Carpool.BLL.Services.Ride
                 LineAddress = "Rua asdsad",
                 PhotoUrl = "blobStorage",
                 Rating = 4.2M,
-                ScheduledTime = "12:40"
+                ScheduleTime = "12:40"
             };
 
             await _rideRepository.CreateRideRequest(rideCreateCommand.CampusId, ride);
@@ -61,9 +61,16 @@ namespace Carpool.BLL.Services.Ride
             return rides;
         }
 
-        public Task<RideStudentResult> GetRideRequestByStudent(int studentId)
+        public async Task<RideStudentResult> GetRideRequestByStudent(int campusId, int studentId)
         {
-            throw new NotImplementedException();
+            var studentRide = await _rideRepository.GetStudentRideRequest(campusId, studentId);
+            var ride = new RideStudentResult()
+            {
+                ScheduleTime = studentRide.ScheduleTime,
+                CampusLineAddress = studentRide.CampusLineAddress,
+                CampusName = studentRide.CampusName
+            };
+            return ride;
         }
     }
 }

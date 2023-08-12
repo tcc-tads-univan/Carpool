@@ -19,12 +19,11 @@ namespace Carpool.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{studentId}/ride")]
-        public async Task<IActionResult> GetStudentCarpool(int studentId)
+        [Route("{studentId}/schedule")]
+        public async Task<IActionResult> GetStudentSchedule(int studentId)
         {
-            var ride = await _rideService.GetRideRequestByStudent(studentId);
-            var rideResponse = _mapper.Map<RideStudentResponse>(ride);
-            return Ok(rideResponse);
+            await Task.CompletedTask;
+            return Ok();
         }
     }
 }

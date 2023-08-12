@@ -15,17 +15,9 @@ namespace Carpool.DAL.Persistence.Relational.Repository
             _campusEntity = context.Set<Campus>();
             _logger = logger;
         }
-        public async Task<IEnumerable<Campus>> GetAllCampus()
+        public async Task<IEnumerable<Campus>> GetAllCampi()
         {
-            try
-            {
-                return await _campusEntity.Include(c => c.College).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error fetching all campus");
-                throw;
-            }
+            return await _campusEntity.Include(c => c.College).ToListAsync();
         }
     }
 }

@@ -9,6 +9,6 @@ namespace Carpool.BLL.Services.Ride
         Task CancelStudentRideRequest(RideDeleteCommand rideDeleteCommand);
         Task CalculateRideRoute();
         Task<IEnumerable<RideResult>> GetAllRideRequestsByCampus(int campusId);
-        Task<RideStudentResult> GetRideRequestByStudent(int studentId);
+        Task<RideStudentResult> GetRideRequestByStudent(int campusId, int studentId);
     }
 }
