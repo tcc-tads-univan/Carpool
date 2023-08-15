@@ -12,10 +12,11 @@ namespace Carpool.DAL.Persistence.Relational.EntityConfigurations
             builder.HasKey(c => c.ScheduleId);
             builder.Property(c => c.DriverId).IsRequired();
             builder.Property(c => c.StudentId).IsRequired();
-            builder.Property(c => c.ScheduledTime).IsRequired().HasMaxLength(5);
+            builder.Property(c => c.ScheduleTime).IsRequired().HasMaxLength(5);
             builder.Property(c => c.RequestDate).IsRequired();
             builder.Property(c => c.Origin).HasMaxLength(120);
             builder.Property(c => c.Destination).HasMaxLength(120);
+            builder.Property(c => c.RidePrice).HasPrecision(7,2);
         }
     }
 }

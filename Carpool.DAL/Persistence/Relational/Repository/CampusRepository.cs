@@ -9,11 +9,9 @@ namespace Carpool.DAL.Persistence.Relational.Repository
     public class CampusRepository : ICampusRepository
     {
         private readonly DbSet<Campus> _campusEntity;
-        private readonly ILogger<CampusRepository> _logger;
         public CampusRepository(CarpoolContext context, ILogger<CampusRepository> logger)
         {
             _campusEntity = context.Set<Campus>();
-            _logger = logger;
         }
         public async Task<IEnumerable<Campus>> GetAllCampi()
         {

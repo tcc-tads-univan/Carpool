@@ -37,7 +37,7 @@ namespace Carpool.BLL.Services.Ride
                 PhoneNumber = "213123",
                 CampusLineAddress = "",
                 CampusName = "",
-                LineAddress = "Rua asdsad",
+                StudentLineAddress = "Rua asdsad",
                 PhotoUrl = "blobStorage",
                 Rating = 4.2M,
                 ScheduleTime = "12:40"
@@ -53,7 +53,7 @@ namespace Carpool.BLL.Services.Ride
             {
                 StudentId = r.StudentId,
                 Name = r.StudentName,
-                LineAddress = r.LineAddress,
+                LineAddress = r.StudentLineAddress,
                 PhoneNumber = r.PhoneNumber,
                 PhotoUrl = r.PhotoUrl,
                 Rating = r.Rating

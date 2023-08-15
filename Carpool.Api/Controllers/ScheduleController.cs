@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Carpool.Api.Contracts.Schedule.Request;
+using Carpool.BLL.Services.Schedule;
+using Carpool.BLL.Services.Schedule.Models.Command;
+using MapsterMapper;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Carpool.Api.Controllers
 {
@@ -6,18 +11,27 @@ namespace Carpool.Api.Controllers
     [Route("api/[controller]")]
     public class ScheduleController : ControllerBase
     {
-        [HttpPost]
-        public async Task<IActionResult> SendPreSchedule()
+        private readonly IScheduleService _scheduleService;
+        private readonly IMapper _mapper;
+        public ScheduleController(IScheduleService scheduleService, IMapper mapper)
         {
-            await Task.CompletedTask;
+            _scheduleService = scheduleService;
+            _mapper = mapper; 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePreSchedule([FromBody] ScheduleCreateRequest scheduleCreateRequest)
+        {
+            var scheduleCommand = _mapper.Map<ScheduleCreateCommand>(scheduleCreateRequest);
+            await _scheduleService.CreatePreSchedule(scheduleCommand);
             return Ok();
         }
 
         [HttpPut]
-        [Route("accept")]
-        public async Task<IActionResult> AcceptSchedule()
+        [Route("{scheduleId}/accept")]
+        public async Task<IActionResult> AcceptSchedule(int scheduleId)
         {
-            await Task.CompletedTask;
+            await _scheduleService.StudentAcceptSchedule(scheduleId);
             return Ok();
         }
 
