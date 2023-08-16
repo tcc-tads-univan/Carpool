@@ -6,7 +6,7 @@ namespace Carpool.Api
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddPresentationDependency(this IServiceCollection services)
+        public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
         {
             AddMapping(services);
             return services;

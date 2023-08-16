@@ -10,7 +10,7 @@ namespace Carpool.BLL.Services.Campus
         {
             _campusRepository = campusRepository;
         }
-        public async Task<IEnumerable<CampusResult>> GetAllCampi()
+        public async Task<List<CampusResult>> GetAllCampi()
         {
             var campi = await _campusRepository.GetAllCampi();
             var campusResult = campi.Select(c => new CampusResult
@@ -25,7 +25,7 @@ namespace Carpool.BLL.Services.Campus
                     Acronym = c.College.Acronym,
                     CollegeName = c.College.CollegeName
                 }
-            });
+            }).ToList();
             return campusResult;
         }
     }

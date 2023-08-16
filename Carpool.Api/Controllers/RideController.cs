@@ -26,7 +26,7 @@ namespace Carpool.Api.Controllers
         {
             var command = _mapper.Map<RideCreateCommand>(rideCreateRequest);
             await _rideService.CreateStudentRideRequest(command);
-            return Ok();
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         [HttpDelete]

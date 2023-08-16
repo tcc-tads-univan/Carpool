@@ -8,10 +8,11 @@ namespace Carpool.BLL.Services.Ride
     public class RideService : IRideService
     {
         private readonly IRideRepository _rideRepository;
-        private readonly ICampusRepository campusRepository;
-        public RideService(IRideRepository rideRepository)
+        private readonly ICampusRepository _campusRepository;
+        public RideService(IRideRepository rideRepository, ICampusRepository campusRepository)
         {
             _rideRepository = rideRepository;
+            _campusRepository = campusRepository;
         }
 
         public Task CalculateRideRoute()
@@ -28,25 +29,26 @@ namespace Carpool.BLL.Services.Ride
         {
             //CallService student
 
-            //Get CampusInformation from DB _campusRepository
+            DAL.Domain.Campus campus = await _campusRepository.GetCampus(rideCreateCommand.CampusId);
+            //TODO: DomainError when Campus is null (campusId not exist)
 
             DAL.Domain.Ride ride = new DAL.Domain.Ride()
             {
                 StudentId = 1,
                 StudentName = "Mateus",
                 PhoneNumber = "213123",
-                CampusLineAddress = "",
-                CampusName = "",
+                CampusLineAddress = campus.LineAddress,
+                CampusName = campus.CampusName,
                 StudentLineAddress = "Rua asdsad",
                 PhotoUrl = "blobStorage",
                 Rating = 4.2M,
-                ScheduleTime = "12:40"
+                ScheduleTime = rideCreateCommand.ScheduleTime
             };
 
             await _rideRepository.CreateRideRequest(rideCreateCommand.CampusId, ride);
         }
 
-        public async Task<IEnumerable<RideResult>> GetAllRideRequestsByCampus(int campusId)
+        public async Task<List<RideResult>> GetAllRideRequestsByCampus(int campusId)
         {
             var rideRequests = await _rideRepository.GetAllRideRequests(campusId);
             var rides = rideRequests.Select(r => new RideResult
@@ -57,7 +59,7 @@ namespace Carpool.BLL.Services.Ride
                 PhoneNumber = r.PhoneNumber,
                 PhotoUrl = r.PhotoUrl,
                 Rating = r.Rating
-            });
+            }).ToList();
             return rides;
         }
 

@@ -10,8 +10,4 @@
     <ProjectReference Include="..\Carpool.DAL\Carpool.DAL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\ScheduleHandler\" />
-  </ItemGroup>
-
 </Project>

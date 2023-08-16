@@ -1,3 +1,4 @@
+using Carpool.Api;
 using Carpool.BLL;
 using Carpool.DAL;
 
@@ -10,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddPresentationLayer();
 builder.Services.AddBusinessLayer();
 builder.Services.AddDataAccessLayer(builder.Configuration);
 

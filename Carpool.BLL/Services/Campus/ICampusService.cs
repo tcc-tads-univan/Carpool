@@ -4,6 +4,6 @@ namespace Carpool.BLL.Services.Campus
 {
     public interface ICampusService
     {
-        Task<IEnumerable<CampusResult>> GetAllCampi(); 
+        Task<List<CampusResult>> GetAllCampi(); 
     }
 }

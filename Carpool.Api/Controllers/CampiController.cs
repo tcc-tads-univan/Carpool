@@ -28,7 +28,7 @@ namespace Carpool.Api.Controllers
         public async Task<IActionResult> GetAllCampi()
         {
             var campi = await _campusService.GetAllCampi();
-            var campiResponse = _mapper.Map<CampusResponse>(campi);
+            var campiResponse = _mapper.Map<List<CampusResponse>>(campi);
             return Ok(campiResponse);
         }
 
@@ -38,7 +38,7 @@ namespace Carpool.Api.Controllers
         public async Task<IActionResult> GetAllCampusRide(int campusId)
         {
             var rides = await _rideService.GetAllRideRequestsByCampus(campusId);
-            var ridesResponse = _mapper.Map<IEnumerable<RideResponse>>(rides);
+            var ridesResponse = _mapper.Map<List<RideResponse>>(rides);
             return Ok(ridesResponse);
         }
 
