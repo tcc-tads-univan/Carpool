@@ -4,7 +4,7 @@ using Carpool.BLL.Services.Schedule;
 using Carpool.BLL.Services.Schedule.Models.Command;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Carpool.Api.Controllers
 {
@@ -21,7 +21,8 @@ namespace Carpool.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePreSchedule([FromBody] ScheduleCreateRequest scheduleCreateRequest)
+        [SwaggerResponse(StatusCodes.Status201Created)]
+        public async Task<IActionResult> CreatePreSchedule(ScheduleCreateRequest scheduleCreateRequest)
         {
             var scheduleCommand = _mapper.Map<ScheduleCreateCommand>(scheduleCreateRequest);
             await _scheduleService.CreatePreSchedule(scheduleCommand);
@@ -30,6 +31,7 @@ namespace Carpool.Api.Controllers
 
         [HttpPut]
         [Route("{scheduleId}/accept")]
+        [SwaggerResponse(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> AcceptSchedule(int scheduleId)
         {
             await _scheduleService.StudentAcceptSchedule(scheduleId);
@@ -38,6 +40,7 @@ namespace Carpool.Api.Controllers
 
         [HttpPut]
         [Route("{scheduleId}/reject")]
+        [SwaggerResponse(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> RejectSchedule(int scheduleId)
         {
             await _scheduleService.StudentRejectSchedule(scheduleId);
@@ -46,6 +49,7 @@ namespace Carpool.Api.Controllers
 
         [HttpGet]
         [Route("{scheduleId}")]
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ScheduleResponse))]
         public async Task<IActionResult> GetSchedule(int scheduleId)
         {
             var scheduleResult = await _scheduleService.GetSchedule(scheduleId);

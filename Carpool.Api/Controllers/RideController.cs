@@ -1,5 +1,6 @@
 ﻿using Carpool.Api.Contracts.Ride;
 using Carpool.Api.Contracts.Ride.Request;
+using Carpool.BLL.Common.Errors;
 using Carpool.BLL.Services.Ride;
 using Carpool.BLL.Services.Ride.Models.Command;
 using MapsterMapper;
@@ -8,9 +9,8 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Carpool.Api.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class RideController : ControllerBase
+    public class RideController : BaseController
     {
         private readonly IRideService _rideService;
         private readonly IMapper _mapper;
@@ -25,8 +25,13 @@ namespace Carpool.Api.Controllers
         public async Task<IActionResult> CreateRideRequest(RideCreateRequest rideCreateRequest)
         {
             var command = _mapper.Map<RideCreateCommand>(rideCreateRequest);
-            await _rideService.CreateStudentRideRequest(command);
-            return StatusCode(StatusCodes.Status201Created);
+            var result = await _rideService.CreateStudentRideRequest(command);
+            if (result.IsSuccess)
+            {
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            
+            return ProblemDetails(result.Errors);
         }
 
         [HttpDelete]

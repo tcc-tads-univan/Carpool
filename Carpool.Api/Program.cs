@@ -1,4 +1,5 @@
 using Carpool.Api;
+using Carpool.Api.Middleware;
 using Carpool.BLL;
 using Carpool.DAL;
 
@@ -27,6 +28,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.MapControllers();
 

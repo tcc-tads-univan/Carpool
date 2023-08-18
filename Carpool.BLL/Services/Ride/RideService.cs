@@ -1,7 +1,9 @@
-﻿using Carpool.BLL.Services.Ride.Models.Command;
+﻿using Carpool.BLL.Common.Errors;
+using Carpool.BLL.Services.Ride.Models.Command;
 using Carpool.BLL.Services.Ride.Models.Result;
 using Carpool.DAL.Persistence.Redis.Interfaces;
 using Carpool.DAL.Persistence.Relational.Repository.Interfaces;
+using FluentResults;
 
 namespace Carpool.BLL.Services.Ride
 {
@@ -25,12 +27,14 @@ namespace Carpool.BLL.Services.Ride
             await _rideRepository.DeleteRideRequest(rideDeleteCommand.CampusId, rideDeleteCommand.StudentId);
         }
 
-        public async Task CreateStudentRideRequest(RideCreateCommand rideCreateCommand)
+        public async Task<Result> CreateStudentRideRequest(RideCreateCommand rideCreateCommand)
         {
             //CallService student
 
             DAL.Domain.Campus campus = await _campusRepository.GetCampus(rideCreateCommand.CampusId);
             //TODO: DomainError when Campus is null (campusId not exist)
+            if(campus is null)
+                return Result.Fail(new CampusNotFound());
 
             DAL.Domain.Ride ride = new DAL.Domain.Ride()
             {
@@ -46,6 +50,7 @@ namespace Carpool.BLL.Services.Ride
             };
 
             await _rideRepository.CreateRideRequest(rideCreateCommand.CampusId, ride);
+            return Result.Ok();
         }
 
         public async Task<List<RideResult>> GetAllRideRequestsByCampus(int campusId)
@@ -66,6 +71,7 @@ namespace Carpool.BLL.Services.Ride
         public async Task<RideStudentResult> GetRideRequestByStudent(int campusId, int studentId)
         {
             var studentRide = await _rideRepository.GetStudentRideRequest(campusId, studentId);
+            //TODO: studentRide do not exist
             var ride = new RideStudentResult()
             {
                 ScheduleTime = studentRide.ScheduleTime,

@@ -41,15 +41,5 @@ namespace Carpool.Api.Controllers
             var ridesResponse = _mapper.Map<List<RideResponse>>(rides);
             return Ok(ridesResponse);
         }
-
-        [HttpGet]
-        [Route("{campusId}/Student/{studentId}/ride")]
-        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(RideResponse))]
-        public async Task<IActionResult> GetStudentRide(int campusId, int studentId)
-        {
-            var ride = await _rideService.GetRideRequestByStudent(campusId, studentId);
-            var rideResponse = _mapper.Map<RideStudentResponse>(ride);
-            return Ok(rideResponse);
-        }
     }
 }
