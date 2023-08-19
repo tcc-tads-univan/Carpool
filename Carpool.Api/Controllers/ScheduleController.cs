@@ -2,15 +2,15 @@
 using Carpool.Api.Contracts.Schedule.Response;
 using Carpool.BLL.Services.Schedule;
 using Carpool.BLL.Services.Schedule.Models.Command;
+using FluentResults;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Carpool.Api.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class ScheduleController : ControllerBase
+    public class ScheduleController : BaseController
     {
         private readonly IScheduleService _scheduleService;
         private readonly IMapper _mapper;
@@ -22,39 +22,63 @@ namespace Carpool.Api.Controllers
 
         [HttpPost]
         [SwaggerResponse(StatusCodes.Status201Created)]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> CreatePreSchedule(ScheduleCreateRequest scheduleCreateRequest)
         {
             var scheduleCommand = _mapper.Map<ScheduleCreateCommand>(scheduleCreateRequest);
-            await _scheduleService.CreatePreSchedule(scheduleCommand);
-            return StatusCode(StatusCodes.Status201Created);
+            var result = await _scheduleService.CreatePreSchedule(scheduleCommand);
+            if (result.IsSuccess)
+            {
+                return StatusCode(StatusCodes.Status201Created);
+            }
+
+            return ProblemDetails(result.Errors);
         }
 
         [HttpPut]
         [Route("{scheduleId}/accept")]
         [SwaggerResponse(StatusCodes.Status204NoContent)]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> AcceptSchedule(int scheduleId)
         {
-            await _scheduleService.StudentAcceptSchedule(scheduleId);
-            return Ok();
+            var result = await _scheduleService.StudentAcceptSchedule(scheduleId);
+            if (result.IsSuccess)
+            {
+                return Ok();
+            }
+
+            return ProblemDetails(result.Errors);
         }
 
         [HttpPut]
         [Route("{scheduleId}/reject")]
         [SwaggerResponse(StatusCodes.Status204NoContent)]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> RejectSchedule(int scheduleId)
         {
-            await _scheduleService.StudentRejectSchedule(scheduleId);
-            return Ok();
+            var result = await _scheduleService.StudentRejectSchedule(scheduleId);
+            if (result.IsSuccess)
+            {
+                return Ok();
+            }
+
+            return ProblemDetails(result.Errors);
         }
 
         [HttpGet]
         [Route("{scheduleId}")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ScheduleResponse))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> GetSchedule(int scheduleId)
         {
             var scheduleResult = await _scheduleService.GetSchedule(scheduleId);
-            var scheduleResponse = _mapper.Map<ScheduleResponse>(scheduleResult);
-            return Ok(scheduleResponse);
+            if (scheduleResult.IsSuccess)
+            {
+                var scheduleResponse = _mapper.Map<ScheduleResponse>(scheduleResult);
+                return Ok(scheduleResponse);
+            }
+
+            return ProblemDetails(scheduleResult.Errors);
         }
 
     }

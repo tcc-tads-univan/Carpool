@@ -11,5 +11,7 @@ namespace Carpool.DAL.Persistence.Redis.Interfaces
         Task<IEnumerable<Ride>> GetAllRideRequests(int campusId);
 
         Task<Ride> GetStudentRideRequest(int campusId, int studentId);
+
+        Task<bool> RideExist(int campusId, int studentId);
     }
 }

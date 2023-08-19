@@ -25,9 +25,9 @@ namespace Carpool.DAL.Persistence.Redis
             await _redis.HashSetAsync($"{campusId}", hashRide);
         }
 
-        public async Task DeleteRideRequest(int campusId, int studentId)
+        public Task DeleteRideRequest(int campusId, int studentId)
         {
-            await _redis.HashDeleteAsync($"{campusId}", studentId);
+            return _redis.HashDeleteAsync($"{campusId}", studentId);
         }
 
         public async Task<IEnumerable<Ride>> GetAllRideRequests(int campusId)
@@ -50,6 +50,11 @@ namespace Carpool.DAL.Persistence.Redis
             var student = JsonSerializer.Deserialize<Ride>(redisValue.ToString());
 
             return student;
+        }
+
+        public Task<bool> RideExist(int campusId, int studentId)
+        {
+            return _redis.HashExistsAsync($"{campusId}", studentId);
         }
     }
 }

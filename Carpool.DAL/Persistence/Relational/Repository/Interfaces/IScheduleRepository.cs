@@ -9,5 +9,6 @@ namespace Carpool.DAL.Persistence.Relational.Repository.Interfaces
         Task AcceptSchedule(int scheduleId);
         Task RejectSchedule(int scheduleId);
         Task<Schedule> GetSchedule(int scheduleId);
+        Task<bool> ScheduleExist(int scheduleId);
     }
 }

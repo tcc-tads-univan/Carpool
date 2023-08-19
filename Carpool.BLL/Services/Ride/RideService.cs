@@ -22,9 +22,17 @@ namespace Carpool.BLL.Services.Ride
             throw new NotImplementedException();
         }
 
-        public async Task CancelStudentRideRequest(RideDeleteCommand rideDeleteCommand)
+        public async Task<Result> CancelStudentRideRequest(RideDeleteCommand rideDeleteCommand)
         {
+            if(!(await _rideRepository.RideExist(
+                rideDeleteCommand.CampusId,
+                rideDeleteCommand.StudentId)))
+            {
+                return Result.Fail(new RideNotFound());
+            }
+
             await _rideRepository.DeleteRideRequest(rideDeleteCommand.CampusId, rideDeleteCommand.StudentId);
+            return Result.Ok();
         }
 
         public async Task<Result> CreateStudentRideRequest(RideCreateCommand rideCreateCommand)
@@ -32,9 +40,11 @@ namespace Carpool.BLL.Services.Ride
             //CallService student
 
             DAL.Domain.Campus campus = await _campusRepository.GetCampus(rideCreateCommand.CampusId);
-            //TODO: DomainError when Campus is null (campusId not exist)
+            
             if(campus is null)
+            {
                 return Result.Fail(new CampusNotFound());
+            }
 
             DAL.Domain.Ride ride = new DAL.Domain.Ride()
             {
@@ -68,17 +78,23 @@ namespace Carpool.BLL.Services.Ride
             return rides;
         }
 
-        public async Task<RideStudentResult> GetRideRequestByStudent(int campusId, int studentId)
+        public async Task<Result<RideStudentResult>> GetRideRequestByStudent(int campusId, int studentId)
         {
             var studentRide = await _rideRepository.GetStudentRideRequest(campusId, studentId);
-            //TODO: studentRide do not exist
+            
+            if(studentRide is null)
+            {
+                return Result.Fail(new RideNotFound());
+            }
+
             var ride = new RideStudentResult()
             {
                 ScheduleTime = studentRide.ScheduleTime,
                 CampusLineAddress = studentRide.CampusLineAddress,
                 CampusName = studentRide.CampusName
             };
-            return ride;
+
+            return Result.Ok(ride);
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Carpool.Api.Controllers
 
         [HttpPost]
         [SwaggerResponse(StatusCodes.Status201Created)]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> CreateRideRequest(RideCreateRequest rideCreateRequest)
         {
             var command = _mapper.Map<RideCreateCommand>(rideCreateRequest);
@@ -36,17 +37,24 @@ namespace Carpool.Api.Controllers
 
         [HttpDelete]
         [SwaggerResponse(StatusCodes.Status204NoContent)]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> DeleteRideRequest(RideDeleteRequest rideDeleteRequest)
         {
             var command = _mapper.Map<RideDeleteCommand>(rideDeleteRequest);
-            await _rideService.CancelStudentRideRequest(command);
-            return NoContent();
+            var result = await _rideService.CancelStudentRideRequest(command);
+            if (result.IsSuccess)
+            {
+                return NoContent();
+            }
+
+            return ProblemDetails(result.Errors);
         }
 
         [HttpPost]
         [Route("calculate-route")]
         public async Task<IActionResult> CalculateRideRoute(RouteRequest routeRequest)
         {
+            //Dependency -> Route Service - GRPC
             await Task.CompletedTask;
             return Ok();
         }

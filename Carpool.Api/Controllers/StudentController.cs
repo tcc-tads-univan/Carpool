@@ -2,16 +2,14 @@
 using Carpool.Api.Contracts.Schedule.Response;
 using Carpool.BLL.Services.Ride;
 using Carpool.BLL.Services.Schedule;
-using Carpool.BLL.Services.Schedule.Models.Result;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Carpool.Api.Controllers
 {
-    [ApiController]
     [Route("api")]
-    public class StudentController : ControllerBase
+    public class StudentController : BaseController
     {
         private readonly IRideService _rideService;
         private readonly IScheduleService _scheduleService;
@@ -27,21 +25,33 @@ namespace Carpool.Api.Controllers
         [HttpGet]
         [Route("Student/{studentId}/schedule")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ScheduleResponse))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> GetStudentSchedule(int studentId)
         {
             var scheduleResult = await _scheduleService.GetStudentPreSchedule(studentId);
-            var scheduleResponse = _mapper.Map<ScheduleResponse>(scheduleResult);
-            return Ok(scheduleResponse);
+            if (scheduleResult.IsSuccess)
+            {
+                var scheduleResponse = _mapper.Map<ScheduleResponse>(scheduleResult);
+                return Ok(scheduleResponse);
+            }
+
+            return ProblemDetails(scheduleResult.Errors);
         }
 
         [HttpGet]
         [Route("Campus/{campusId}/Student/{studentId}/ride")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(RideResponse))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> GetStudentRide(int campusId, int studentId)
         {
-            var ride = await _rideService.GetRideRequestByStudent(campusId, studentId);
-            var rideResponse = _mapper.Map<RideStudentResponse>(ride);
-            return Ok(rideResponse);
+            var rideResult = await _rideService.GetRideRequestByStudent(campusId, studentId);
+            if (rideResult.IsSuccess)
+            {
+                var rideResponse = _mapper.Map<RideStudentResponse>(rideResult);
+                return Ok(rideResponse);
+            }
+
+            return ProblemDetails(rideResult.Errors);
         }
     }
 }

@@ -47,5 +47,10 @@ namespace Carpool.DAL.Persistence.Relational.Repository
             await _schedule.AddAsync(schedule);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> ScheduleExist(int scheduleId)
+        {
+            return await _schedule.AnyAsync(s => s.ScheduleId == scheduleId);
+        }
     }
 }
