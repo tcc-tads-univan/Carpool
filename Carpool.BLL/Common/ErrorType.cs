@@ -1,4 +1,4 @@
-﻿namespace Carpool.BLL.Common.Errors
+﻿namespace Carpool.BLL.Common
 {
     public enum ErrorType
     {

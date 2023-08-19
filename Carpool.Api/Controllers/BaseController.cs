@@ -1,5 +1,4 @@
 ﻿using Carpool.BLL.Common;
-using Carpool.BLL.Common.Errors;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

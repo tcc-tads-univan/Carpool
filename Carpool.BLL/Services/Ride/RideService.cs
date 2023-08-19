@@ -46,6 +46,13 @@ namespace Carpool.BLL.Services.Ride
                 return Result.Fail(new CampusNotFound());
             }
 
+            if (!(await _rideRepository.RideExist(
+                    rideCreateCommand.CampusId,
+                    rideCreateCommand.StudentId)))
+            {
+                return Result.Fail(new RideAlreadyExist());
+            }
+
             DAL.Domain.Ride ride = new DAL.Domain.Ride()
             {
                 StudentId = 1,

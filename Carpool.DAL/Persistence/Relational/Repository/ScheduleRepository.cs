@@ -23,7 +23,7 @@ namespace Carpool.DAL.Persistence.Relational.Repository
 
         public async Task<Schedule> GetPreScheduleByStudentId(int studentId)
         {
-            var schedule = await _schedule.Where(s => s.StudentId == studentId)
+            var schedule = await _schedule.Where(s => s.StudentId == studentId && s.Accepted == null)
                 .OrderByDescending(s => s.RequestDate)
                 .FirstOrDefaultAsync();
             return schedule;
@@ -48,9 +48,9 @@ namespace Carpool.DAL.Persistence.Relational.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> ScheduleExist(int scheduleId)
+        public async Task<bool> isValidSchedule(int scheduleId)
         {
-            return await _schedule.AnyAsync(s => s.ScheduleId == scheduleId);
+            return await _schedule.AnyAsync(s => s.ScheduleId == scheduleId && s.Accepted == null);
         }
     }
 }

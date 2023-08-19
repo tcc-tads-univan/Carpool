@@ -20,7 +20,7 @@ namespace Carpool.DAL.Persistence.Relational.Repository
 
         public async Task<Campus> GetCampus(int campusId)
         {
-            return await _campusEntity.Include(c => c.College).FirstOrDefaultAsync(c => c.CampusId == campusId);
+            return await _campusEntity.FirstOrDefaultAsync(c => c.CampusId == campusId);
         }
     }
 }

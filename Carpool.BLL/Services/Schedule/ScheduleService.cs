@@ -1,7 +1,6 @@
 ﻿using Carpool.BLL.Common.Errors;
 using Carpool.BLL.Services.Schedule.Models.Command;
 using Carpool.BLL.Services.Schedule.Models.Result;
-using Carpool.DAL.Domain;
 using Carpool.DAL.Persistence.Redis.Interfaces;
 using Carpool.DAL.Persistence.Relational.Repository.Interfaces;
 using FluentResults;
@@ -75,7 +74,7 @@ namespace Carpool.BLL.Services.Schedule
 
             if (schedule is null)
             {
-                return Result.Fail(new ScheduleNotFound());
+                return Result.Fail(new ScheduleInvalid());
             }
 
             //call infrastructure service
@@ -98,9 +97,9 @@ namespace Carpool.BLL.Services.Schedule
 
         public async Task<Result> StudentAcceptSchedule(int scheduleId)
         {
-            if(!(await _scheduleRepository.ScheduleExist(scheduleId)))
+            if(!(await _scheduleRepository.isValidSchedule(scheduleId)))
             {
-                return Result.Fail(new ScheduleNotFound());
+                return Result.Fail(new ScheduleInvalid());
             }
 
             await _scheduleRepository.AcceptSchedule(scheduleId);
@@ -110,9 +109,9 @@ namespace Carpool.BLL.Services.Schedule
 
         public async Task<Result> StudentRejectSchedule(int scheduleId)
         {
-            if (!(await _scheduleRepository.ScheduleExist(scheduleId)))
+            if (!(await _scheduleRepository.isValidSchedule(scheduleId)))
             {
-                return Result.Fail(new ScheduleNotFound());
+                return Result.Fail(new ScheduleInvalid());
             }
 
             await _scheduleRepository.RejectSchedule(scheduleId);
