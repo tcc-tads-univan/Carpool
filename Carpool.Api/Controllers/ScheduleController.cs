@@ -44,7 +44,7 @@ namespace Carpool.Api.Controllers
             var result = await _scheduleService.StudentAcceptSchedule(scheduleId);
             if (result.IsSuccess)
             {
-                return Ok();
+                return NoContent();
             }
 
             return ProblemDetails(result.Errors);
@@ -59,7 +59,7 @@ namespace Carpool.Api.Controllers
             var result = await _scheduleService.StudentRejectSchedule(scheduleId);
             if (result.IsSuccess)
             {
-                return Ok();
+                return NoContent();
             }
 
             return ProblemDetails(result.Errors);
@@ -74,7 +74,7 @@ namespace Carpool.Api.Controllers
             var scheduleResult = await _scheduleService.GetSchedule(scheduleId);
             if (scheduleResult.IsSuccess)
             {
-                var scheduleResponse = _mapper.Map<ScheduleResponse>(scheduleResult);
+                var scheduleResponse = _mapper.Map<ScheduleResponse>(scheduleResult.Value);
                 return Ok(scheduleResponse);
             }
 

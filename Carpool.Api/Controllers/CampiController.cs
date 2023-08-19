@@ -33,7 +33,7 @@ namespace Carpool.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{campusId}/ride")]
+        [Route("{campusId}/rides")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(IEnumerable<RideResponse>))]
         public async Task<IActionResult> GetAllCampusRide(int campusId)
         {

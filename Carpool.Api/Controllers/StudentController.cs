@@ -31,7 +31,7 @@ namespace Carpool.Api.Controllers
             var scheduleResult = await _scheduleService.GetStudentPreSchedule(studentId);
             if (scheduleResult.IsSuccess)
             {
-                var scheduleResponse = _mapper.Map<ScheduleResponse>(scheduleResult);
+                var scheduleResponse = _mapper.Map<ScheduleResponse>(scheduleResult.Value);
                 return Ok(scheduleResponse);
             }
 
@@ -47,7 +47,7 @@ namespace Carpool.Api.Controllers
             var rideResult = await _rideService.GetRideRequestByStudent(campusId, studentId);
             if (rideResult.IsSuccess)
             {
-                var rideResponse = _mapper.Map<RideStudentResponse>(rideResult);
+                var rideResponse = _mapper.Map<RideStudentResponse>(rideResult.Value);
                 return Ok(rideResponse);
             }
 
