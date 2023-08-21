@@ -46,9 +46,9 @@ namespace Carpool.BLL.Services.Ride
                 return Result.Fail(new CampusNotFound());
             }
 
-            if (!(await _rideRepository.RideExist(
+            if (await _rideRepository.RideExist(
                     rideCreateCommand.CampusId,
-                    rideCreateCommand.StudentId)))
+                    rideCreateCommand.StudentId))
             {
                 return Result.Fail(new RideAlreadyExist());
             }
@@ -77,6 +77,7 @@ namespace Carpool.BLL.Services.Ride
             {
                 StudentId = r.StudentId,
                 Name = r.StudentName,
+                ScheduleTime = r.ScheduleTime,
                 LineAddress = r.StudentLineAddress,
                 PhoneNumber = r.PhoneNumber,
                 PhotoUrl = r.PhotoUrl,
