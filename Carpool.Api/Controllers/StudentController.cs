@@ -39,8 +39,8 @@ namespace Carpool.Api.Controllers
         }
 
         [HttpGet]
-        [Route("Campus/{campusId}/Student/{studentId}/ride")]
-        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(RideResponse))]
+        [Route("Campi/{campusId}/Student/{studentId}/ride")]
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(RideStudentResponse))]
         [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> GetStudentRide(int campusId, int studentId)
         {
