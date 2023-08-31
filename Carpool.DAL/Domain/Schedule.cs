@@ -7,6 +7,7 @@
         public int StudentId { get; set; }
         public String ScheduleTime { get; set; }
         public int DriverId { get; set; }
+        public int CampusId { get; set; }
         public String Origin { get; set; }
         public String Destination { get; set; }
         public decimal RidePrice { get; set; }

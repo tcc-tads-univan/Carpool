@@ -35,6 +35,7 @@ namespace Carpool.BLL.Services.Schedule
                 Destination = studentRide.StudentLineAddress,
                 ScheduleTime = studentRide.ScheduleTime,
                 RequestDate = DateTime.Now,
+                CampusId = command.CampusId,
                 RidePrice = 12.23M
             };
 
@@ -102,7 +103,11 @@ namespace Carpool.BLL.Services.Schedule
                 return Result.Fail(new ScheduleInvalid());
             }
 
+            var schedule = await _scheduleRepository.GetSchedule(scheduleId);
+
             await _scheduleRepository.AcceptSchedule(scheduleId);
+            await _rideRepository.DeleteRideRequest(schedule.CampusId, schedule.StudentId);
+            
             //send notification
             return Result.Ok();
         }
