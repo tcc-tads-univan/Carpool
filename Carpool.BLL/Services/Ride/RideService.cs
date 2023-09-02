@@ -55,7 +55,7 @@ namespace Carpool.BLL.Services.Ride
 
             DAL.Domain.Ride ride = new DAL.Domain.Ride()
             {
-                StudentId = 1,
+                StudentId = rideCreateCommand.StudentId,
                 StudentName = "Mateus",
                 PhoneNumber = "213123",
                 CampusLineAddress = campus.LineAddress,
