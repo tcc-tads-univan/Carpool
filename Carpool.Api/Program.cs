@@ -13,6 +13,7 @@ builder.Services.AddCors(options =>
         name: ionicFrontend,
         policyBuilder => policyBuilder
             .WithOrigins("http://localhost:4200")
+            .WithOrigins("http://localhost:8080")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials()
@@ -39,7 +40,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(ionicFrontend);
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
