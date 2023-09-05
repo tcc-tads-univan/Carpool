@@ -2,7 +2,6 @@
 using Carpool.Api.Contracts.Schedule.Response;
 using Carpool.BLL.Services.Schedule;
 using Carpool.BLL.Services.Schedule.Models.Command;
-using FluentResults;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -65,6 +64,22 @@ namespace Carpool.Api.Controllers
             return ProblemDetails(result.Errors);
         }
 
+        [HttpGet]
+        [Route("Student/{studentId}")]
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ScheduleResponse))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+        public async Task<IActionResult> GetScheduleByStudentId(int studentId)
+        {
+            var scheduleResult = await _scheduleService.GetStudentPreSchedule(studentId);
+            if (scheduleResult.IsSuccess)
+            {
+                var scheduleResponse = _mapper.Map<ScheduleResponse>(scheduleResult.Value);
+                return Ok(scheduleResponse);
+            }
+
+            return ProblemDetails(scheduleResult.Errors);
+        }
+        
         [HttpGet]
         [Route("{scheduleId}")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ScheduleResponse))]
