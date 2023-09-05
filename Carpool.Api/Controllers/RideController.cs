@@ -1,6 +1,6 @@
 ﻿using Carpool.Api.Contracts.Ride;
 using Carpool.Api.Contracts.Ride.Request;
-using Carpool.BLL.Common.Errors;
+using Carpool.Api.Contracts.Ride.Response;
 using Carpool.BLL.Services.Ride;
 using Carpool.BLL.Services.Ride.Models.Command;
 using MapsterMapper;
@@ -48,6 +48,22 @@ namespace Carpool.Api.Controllers
             }
 
             return ProblemDetails(result.Errors);
+        }
+        
+        [HttpGet]
+        [Route("Campus/{campusId}/Student/{studentId}")]
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(RideStudentResponse))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+        public async Task<IActionResult> GetStudentRide(int campusId, int studentId)
+        {
+            var rideResult = await _rideService.GetRideRequestByStudent(campusId, studentId);
+            if (rideResult.IsSuccess)
+            {
+                var rideResponse = _mapper.Map<RideStudentResponse>(rideResult.Value);
+                return Ok(rideResponse);
+            }
+
+            return ProblemDetails(rideResult.Errors);
         }
 
         [HttpPost]
