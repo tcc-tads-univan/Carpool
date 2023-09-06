@@ -65,10 +65,9 @@ namespace Carpool.Api.Controllers
         }
 
         [HttpGet]
-        [Route("Student/{studentId}")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ScheduleResponse))]
         [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
-        public async Task<IActionResult> GetScheduleByStudentId(int studentId)
+        public async Task<IActionResult> GetScheduleByStudentId([FromQuery] int studentId)
         {
             var scheduleResult = await _scheduleService.GetStudentPreSchedule(studentId);
             if (scheduleResult.IsSuccess)
