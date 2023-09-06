@@ -21,7 +21,8 @@ namespace Carpool.Api.Controllers
             _scheduleService = scheduleService;
             _mapper = mapper;
         }
-
+        
+        [Obsolete("Recuperar pelo Schedule controller, que usa o studentId")]
         [HttpGet]
         [Route("Student/{studentId}/schedule")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ScheduleResponse))]
@@ -38,6 +39,7 @@ namespace Carpool.Api.Controllers
             return ProblemDetails(scheduleResult.Errors);
         }
 
+        [Obsolete("Recuperar pelo Ride controller")]
         [HttpGet]
         [Route("Campi/{campusId}/Student/{studentId}/ride")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(RideStudentResponse))]

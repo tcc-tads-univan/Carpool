@@ -40,6 +40,8 @@ namespace Carpool.BLL.Services.Schedule
             };
 
             await _scheduleRepository.SavePreSchedule(schedule);
+            // TODO: Validar esse fluxo de remover a request ja aceita
+            // await _rideRepository.DeleteRideRequest(command.CampusId, command.StudentId); 
 
             //4 - send notification to student
 
