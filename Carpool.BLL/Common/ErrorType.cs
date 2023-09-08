@@ -4,6 +4,7 @@
     {
         NotFound = 0,
         Validation = 1,
-        Conflit = 2
+        Conflit = 2,
+        BadGateway = 3
     }
 }

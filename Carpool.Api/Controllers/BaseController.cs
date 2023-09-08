@@ -19,6 +19,7 @@ namespace Carpool.Api.Controllers
                 ErrorType.NotFound => (int)HttpStatusCode.NotFound,
                 ErrorType.Validation => (int)HttpStatusCode.BadRequest,
                 ErrorType.Conflit => (int)HttpStatusCode.Conflict,
+                ErrorType.BadGateway => (int)HttpStatusCode.BadGateway,
                 _ => (int)HttpStatusCode.InternalServerError
             };
 

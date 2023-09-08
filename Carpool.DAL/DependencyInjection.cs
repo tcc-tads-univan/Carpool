@@ -1,4 +1,5 @@
-﻿using Carpool.DAL.Persistence.Redis;
+﻿using Carpool.DAL.Infrastructure.Services.Student;
+using Carpool.DAL.Persistence.Redis;
 using Carpool.DAL.Persistence.Redis.Interfaces;
 using Carpool.DAL.Persistence.Relational.Context;
 using Carpool.DAL.Persistence.Relational.Repository;
@@ -22,6 +23,11 @@ namespace Carpool.DAL
 
             services.AddDbContext<CarpoolContext>(options => options.UseSqlServer(
                 configuration.GetConnectionString("CarpoolDatabase")));
+
+            services.AddHttpClient<IStudentService, StudentService>(opt =>
+            {
+                opt.BaseAddress = new Uri(configuration.GetSection("StudentService")["Url"]);
+            });
 
             return services;
         }
