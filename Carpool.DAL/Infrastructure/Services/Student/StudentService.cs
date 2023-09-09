@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Carpool.DAL.Infrastructure.Services.Common;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -7,32 +8,21 @@ namespace Carpool.DAL.Infrastructure.Services.Student
 {
     public class StudentService : IStudentService
     {
-        private readonly HttpClient _client;
+        private readonly IApiCaller _apiCaller;
         private readonly ILogger<StudentService> _logger;
 
-        public StudentService(HttpClient client, ILogger<StudentService> logger)
+        public StudentService(IApiCaller apiCaller, ILogger<StudentService> logger)
         {
-            _client = client;
+            _apiCaller = apiCaller;
             _logger = logger;
         }
 
         public async Task<Model.Student> GetStudentBasicInfos(int studentId)
         {
-            //Decorator
             try
             {
-                HttpRequestMessage request = new HttpRequestMessage();
-                request.Method = HttpMethod.Get;
-                request.RequestUri = new Uri($"/student/{studentId}/basic-infos");
-                //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "");
-
-                var response = await _client.SendAsync(request);
-
-                response.EnsureSuccessStatusCode();
-
-                var studentJson = await response.Content.ReadAsStringAsync();
-                var student = JsonSerializer.Deserialize<Model.Student>(studentJson);
-                return student;
+                return await _apiCaller.GetUserInformation<Model.Student>(HttpMethod.Get, 
+                    $"student/{studentId}");
             }
             catch (HttpRequestException ex)
             {

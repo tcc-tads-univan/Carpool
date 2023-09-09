@@ -2,7 +2,7 @@
 
 namespace Carpool.BLL.Common.Errors
 {
-    public class StudentServiceUnavailable : IError
+    public class DriverServiceUnavailable : IError
     {
         public List<IError> Reasons => new List<IError>();
 

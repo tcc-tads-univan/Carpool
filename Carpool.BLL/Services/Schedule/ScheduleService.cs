@@ -1,6 +1,9 @@
 ﻿using Carpool.BLL.Common.Errors;
 using Carpool.BLL.Services.Schedule.Models.Command;
 using Carpool.BLL.Services.Schedule.Models.Result;
+using Carpool.DAL.Domain;
+using Carpool.DAL.Infrastructure.Services.Driver;
+using Carpool.DAL.Infrastructure.Services.Driver.Model;
 using Carpool.DAL.Persistence.Redis.Interfaces;
 using Carpool.DAL.Persistence.Relational.Repository.Interfaces;
 using FluentResults;
@@ -11,14 +14,16 @@ namespace Carpool.BLL.Services.Schedule
     {
         private readonly IRideRepository _rideRepository;
         private readonly IScheduleRepository _scheduleRepository;
-        public ScheduleService(IRideRepository rideRepository, IScheduleRepository scheduleRepository)
+        private readonly IDriverService _driverService;
+
+        public ScheduleService(IRideRepository rideRepository, IScheduleRepository scheduleRepository, IDriverService driverService)
         {
             _rideRepository = rideRepository;
             _scheduleRepository = scheduleRepository;
+            _driverService = driverService;
         }
         public async Task<Result> CreatePreSchedule(ScheduleCreateCommand command)
         {
-            //1 - Call redis to get StudentInformations
             var studentRide = await _rideRepository.GetStudentRideRequest(command.CampusId, command.StudentId);
 
             if(studentRide is null)
@@ -26,7 +31,6 @@ namespace Carpool.BLL.Services.Schedule
                 return Result.Fail(new RideNotFound());
             }
 
-            //2 - Create DAL objetct
             DAL.Domain.Schedule schedule = new DAL.Domain.Schedule
             {
                 StudentId = studentRide.StudentId,
@@ -57,18 +61,14 @@ namespace Carpool.BLL.Services.Schedule
                 return Result.Fail(new ScheduleNotFound());
             }
 
-            var driverInformation = new DriverResult();
+            var driver = await _driverService.GetDriverBasicInfos(schedule.DriverId);
 
-            var scheduleResult = new ScheduleResult()
+            if (driver is null)
             {
-                ScheduleId = schedule.ScheduleId,
-                DestinationAddress = schedule.Destination,
-                OriginAddress = schedule.Origin,
-                ScheduleTime = schedule.ScheduleTime,
-                RidePrice = schedule.RidePrice,
-                Driver = driverInformation
-            };
-            return Result.Ok(scheduleResult);
+                return Result.Fail(new DriverServiceUnavailable());
+            }
+            
+            return Result.Ok(MapScheduleResult(driver, schedule));
         }
 
         public async Task<Result<ScheduleResult>> GetStudentPreSchedule(int studentId)
@@ -80,22 +80,14 @@ namespace Carpool.BLL.Services.Schedule
                 return Result.Fail(new ScheduleInvalid());
             }
 
-            //call infrastructure service
-            //getFromRedis driver informations
-            //design pattern decorator!
-            var driverInformation = new DriverResult();
+            var driver = await _driverService.GetDriverBasicInfos(schedule.DriverId);
 
-            var studentScheduleResult = new ScheduleResult()
+            if(driver is null)
             {
-                ScheduleId = schedule.ScheduleId,
-                DestinationAddress = schedule.Destination,
-                OriginAddress = schedule.Origin,
-                ScheduleTime = schedule.ScheduleTime,
-                RidePrice = schedule.RidePrice,
-                Driver = driverInformation
-            };
+                return Result.Fail(new DriverServiceUnavailable());
+            }
 
-            return Result.Ok(studentScheduleResult);
+            return Result.Ok(MapScheduleResult(driver, schedule));
         }
 
         public async Task<Result> StudentAcceptSchedule(int scheduleId)
@@ -124,6 +116,26 @@ namespace Carpool.BLL.Services.Schedule
             await _scheduleRepository.RejectSchedule(scheduleId);
             //send notification
             return Result.Ok();
+        }
+
+        private ScheduleResult MapScheduleResult(Driver driver, DAL.Domain.Schedule schedule)
+        {
+            return new ScheduleResult()
+            {
+                ScheduleId = schedule.ScheduleId,
+                DestinationAddress = schedule.Destination,
+                OriginAddress = schedule.Origin,
+                ScheduleTime = schedule.ScheduleTime,
+                RidePrice = schedule.RidePrice,
+                Driver = new DriverResult()
+                {
+                    Name = driver.Name,
+                    PhoneNumber = driver.PhoneNumber,
+                    PhotoUrl = driver.PhotoUrl,
+                    Rating = driver.Rating,
+                    VehiclePlate = driver.VehiclePlate
+                }
+            };
         }
     }
 }

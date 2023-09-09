@@ -1,4 +1,6 @@
-﻿using Carpool.DAL.Infrastructure.Services.Student;
+﻿using Carpool.DAL.Infrastructure.Services.Common;
+using Carpool.DAL.Infrastructure.Services.Driver;
+using Carpool.DAL.Infrastructure.Services.Student;
 using Carpool.DAL.Persistence.Redis;
 using Carpool.DAL.Persistence.Redis.Interfaces;
 using Carpool.DAL.Persistence.Relational.Context;
@@ -24,10 +26,18 @@ namespace Carpool.DAL
             services.AddDbContext<CarpoolContext>(options => options.UseSqlServer(
                 configuration.GetConnectionString("CarpoolDatabase")));
 
-            services.AddHttpClient<IStudentService, StudentService>(opt =>
+            services.AddHttpClient<IApiCaller, ApiCaller>(opt =>
             {
-                opt.BaseAddress = new Uri(configuration.GetSection("StudentService")["Url"]);
+                opt.BaseAddress = new Uri(configuration.GetSection("UnivanService")["Url"]);
             });
+
+            services.AddScoped<IStudentService, StudentService>();
+            services.Decorate<IStudentService, CachedStudentService>();
+            
+            services.AddScoped<IDriverService, DriverService>();
+            services.Decorate<IDriverService, CachedDriverService>();
+
+            services.AddMemoryCache();
 
             return services;
         }
