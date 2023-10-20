@@ -1,6 +1,7 @@
 ﻿using Carpool.BLL.Common.Errors;
 using Carpool.BLL.Services.Ride.Models.Command;
 using Carpool.BLL.Services.Ride.Models.Result;
+using Carpool.DAL.Infrastructure.Services.Student;
 using Carpool.DAL.Persistence.Redis.Interfaces;
 using Carpool.DAL.Persistence.Relational.Repository.Interfaces;
 using FluentResults;
@@ -10,11 +11,13 @@ namespace Carpool.BLL.Services.Ride
     public class RideService : IRideService
     {
         private readonly IRideRepository _rideRepository;
+        private readonly IStudentService _studentService;
         private readonly ICampusRepository _campusRepository;
-        public RideService(IRideRepository rideRepository, ICampusRepository campusRepository)
+        public RideService(IRideRepository rideRepository, ICampusRepository campusRepository, IStudentService studentService)
         {
             _rideRepository = rideRepository;
             _campusRepository = campusRepository;
+            _studentService = studentService;
         }
 
         public Task CalculateRideRoute()
@@ -37,7 +40,12 @@ namespace Carpool.BLL.Services.Ride
 
         public async Task<Result> CreateStudentRideRequest(RideCreateCommand rideCreateCommand)
         {
-            //CallService student
+            var student = await _studentService.GetStudentBasicInfos(rideCreateCommand.StudentId);
+
+            if(student is null)
+            {
+                return Result.Fail(new StudentServiceUnavailable());
+            }
 
             DAL.Domain.Campus campus = await _campusRepository.GetCampus(rideCreateCommand.CampusId);
             
@@ -56,13 +64,13 @@ namespace Carpool.BLL.Services.Ride
             DAL.Domain.Ride ride = new DAL.Domain.Ride()
             {
                 StudentId = rideCreateCommand.StudentId,
-                StudentName = "Mateus",
-                PhoneNumber = "213123",
+                StudentName = student.Name,
+                PhoneNumber = student.PhoneNumber,
                 CampusLineAddress = campus.LineAddress,
                 CampusName = campus.CampusName,
-                StudentLineAddress = "Rua asdsad",
-                PhotoUrl = "blobStorage",
-                Rating = 4.2M,
+                StudentLineAddress = student.LineAddress,
+                PhotoUrl = student.PhotoUrl,
+                Rating = student.Rating,
                 ScheduleTime = rideCreateCommand.ScheduleTime
             };
 
