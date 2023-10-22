@@ -1,9 +1,11 @@
 ﻿using Carpool.BLL.Common.Errors;
 using Carpool.BLL.Services.Schedule.Models.Command;
 using Carpool.BLL.Services.Schedule.Models.Result;
-using Carpool.DAL.Domain;
+using Carpool.DAL.Domain.Event;
+using Carpool.DAL.Infrastructure.Messaging;
 using Carpool.DAL.Infrastructure.Services.Driver;
 using Carpool.DAL.Infrastructure.Services.Driver.Model;
+using Carpool.DAL.Infrastructure.Services.Student;
 using Carpool.DAL.Persistence.Redis.Interfaces;
 using Carpool.DAL.Persistence.Relational.Repository.Interfaces;
 using FluentResults;
@@ -15,26 +17,39 @@ namespace Carpool.BLL.Services.Schedule
         private readonly IRideRepository _rideRepository;
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IDriverService _driverService;
+        private readonly IStudentService _studentService;
+        private readonly IMessageSender _messageSender;
 
-        public ScheduleService(IRideRepository rideRepository, IScheduleRepository scheduleRepository, IDriverService driverService)
+        public ScheduleService(IRideRepository rideRepository, IScheduleRepository scheduleRepository, IDriverService driverService, IMessageSender messageSender, IStudentService studentService)
         {
             _rideRepository = rideRepository;
             _scheduleRepository = scheduleRepository;
             _driverService = driverService;
+            _studentService = studentService;
+            _messageSender = messageSender;
         }
         public async Task<Result> CreatePreSchedule(ScheduleCreateCommand command)
         {
             var studentRide = await _rideRepository.GetStudentRideRequest(command.CampusId, command.StudentId);
 
-            if(studentRide is null)
+            if (studentRide is null)
             {
                 return Result.Fail(new RideNotFound());
+            }
+
+            var driver = await _driverService.GetDriverBasicInfos(command.DriverId);
+
+            if (driver is null)
+            {
+                return Result.Fail(new DriverServiceUnavailable());
             }
 
             DAL.Domain.Schedule schedule = new DAL.Domain.Schedule
             {
                 StudentId = studentRide.StudentId,
+                StudentName = studentRide.StudentName,
                 DriverId = command.DriverId,
+                DriverName = driver.Name,
                 Origin = studentRide.CampusLineAddress,
                 Destination = studentRide.StudentLineAddress,
                 ScheduleTime = studentRide.ScheduleTime,
@@ -44,10 +59,8 @@ namespace Carpool.BLL.Services.Schedule
             };
 
             await _scheduleRepository.SavePreSchedule(schedule);
-            // TODO: Validar esse fluxo de remover a request ja aceita
-            // await _rideRepository.DeleteRideRequest(command.CampusId, command.StudentId); 
 
-            //4 - send notification to student
+            await _messageSender.SendEvent(CreateInvitedRideEvent(schedule));
 
             return Result.Ok();
         }
@@ -101,8 +114,9 @@ namespace Carpool.BLL.Services.Schedule
 
             await _scheduleRepository.AcceptSchedule(scheduleId);
             await _rideRepository.DeleteRideRequest(schedule.CampusId, schedule.StudentId);
-            
-            //send notification
+
+            await _messageSender.SendEvent(CreateSaveTripEvent(schedule));
+
             return Result.Ok();
         }
 
@@ -114,8 +128,48 @@ namespace Carpool.BLL.Services.Schedule
             }
 
             await _scheduleRepository.RejectSchedule(scheduleId);
-            //send notification
+            var rejectedSchedule = await _scheduleRepository.GetSchedule(scheduleId);
+
+            await _messageSender.SendEvent(CreateDeclinedEvent(rejectedSchedule));
+
             return Result.Ok();
+        }
+
+        private DeclinedRideEvent CreateDeclinedEvent(DAL.Domain.Schedule rejectedSchedule)
+        {
+            return new DeclinedRideEvent()
+            {
+                DriverId = rejectedSchedule.DriverId,
+                StudentId = rejectedSchedule.StudentId,
+                Origin = rejectedSchedule.Origin,
+                ScheduleTime = rejectedSchedule.ScheduleTime
+            };
+        }
+
+        private SaveTripEvent CreateSaveTripEvent(DAL.Domain.Schedule schedule)
+        {
+            var driver = _driverService.GetDriverBasicInfos(schedule.DriverId);
+            return new SaveTripEvent()
+            {
+                DriverId = schedule.DriverId,
+                StudentId = schedule.StudentId,
+                FinalDestination = schedule.Destination,
+                InitialDestination = schedule.Origin,
+                Price = schedule.RidePrice,
+                DriverName = schedule.DriverName,
+                StudentName = schedule.StudentName
+            };
+        }
+
+        private InvitedRideEvent CreateInvitedRideEvent(DAL.Domain.Schedule schedule)
+        {
+            return new InvitedRideEvent()
+            {
+                DriverId = schedule.DriverId,
+                StudentId = schedule.StudentId,
+                RidePrice = schedule.RidePrice,
+                ScheduleTime = schedule.ScheduleTime
+            };
         }
 
         private ScheduleResult MapScheduleResult(Driver driver, DAL.Domain.Schedule schedule)

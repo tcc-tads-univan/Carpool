@@ -1,4 +1,5 @@
 using Carpool.Api;
+using Carpool.Api.Extensions;
 using Carpool.Api.Middleware;
 using Carpool.BLL;
 using Carpool.DAL;
@@ -27,6 +28,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddPresentationLayer();
 builder.Services.AddBusinessLayer();
 builder.Services.AddDataAccessLayer(builder.Configuration);
+builder.Services.AddMassTransitDependency(builder.Configuration);
 
 var app = builder.Build();
 
@@ -39,7 +41,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(ionicFrontend);
 
-// app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

@@ -11,7 +11,9 @@ namespace Carpool.DAL.Persistence.Relational.EntityConfigurations
             builder.ToTable("Schedule");
             builder.HasKey(c => c.ScheduleId);
             builder.Property(c => c.DriverId).IsRequired();
+            builder.Property(c => c.DriverName).IsRequired().HasMaxLength(150);
             builder.Property(c => c.StudentId).IsRequired();
+            builder.Property(c => c.StudentName).IsRequired().HasMaxLength(150);
             builder.Property(c => c.ScheduleTime).IsRequired().HasMaxLength(5);
             builder.Property(c => c.RequestDate).IsRequired();
             builder.Property(c => c.Origin).HasMaxLength(120);
