@@ -22,7 +22,7 @@ namespace Carpool.DAL.Infrastructure.Services.Student
             try
             {
                 return await _apiCaller.GetUserInformation<Model.Student>(HttpMethod.Get, 
-                    $"student/{studentId}");
+                    $"student/{studentId}/basic-infos");
             }
             catch (HttpRequestException ex)
             {

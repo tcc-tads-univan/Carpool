@@ -20,7 +20,7 @@ namespace Carpool.DAL.Infrastructure.Services.Driver
             try
             {
                 return await _apiCaller.GetUserInformation<Model.Driver>(HttpMethod.Get,
-                    $"driver/{driverId}");
+                    $"driver/{driverId}/basic-infos");
             }
             catch (HttpRequestException ex)
             {
