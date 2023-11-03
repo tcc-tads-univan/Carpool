@@ -10,6 +10,7 @@ WORKDIR /src
 COPY ["Carpool.Api/Carpool.Api.csproj", "Carpool.Api/"]
 COPY ["Carpool.BLL/Carpool.BLL.csproj", "Carpool.BLL/"]
 COPY ["Carpool.DAL/Carpool.DAL.csproj", "Carpool.DAL/"]
+COPY ./nuget.config .
 RUN dotnet restore "Carpool.Api/Carpool.Api.csproj"
 COPY . .
 WORKDIR "/src/Carpool.Api"

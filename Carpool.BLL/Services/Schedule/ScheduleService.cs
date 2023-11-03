@@ -1,7 +1,6 @@
 ﻿using Carpool.BLL.Common.Errors;
 using Carpool.BLL.Services.Schedule.Models.Command;
 using Carpool.BLL.Services.Schedule.Models.Result;
-using Carpool.DAL.Domain.Event;
 using Carpool.DAL.Infrastructure.Messaging;
 using Carpool.DAL.Infrastructure.Services.Driver;
 using Carpool.DAL.Infrastructure.Services.Driver.Model;
@@ -9,6 +8,7 @@ using Carpool.DAL.Infrastructure.Services.Student;
 using Carpool.DAL.Persistence.Redis.Interfaces;
 using Carpool.DAL.Persistence.Relational.Repository.Interfaces;
 using FluentResults;
+using SharedContracts;
 
 namespace Carpool.BLL.Services.Schedule
 {
@@ -60,7 +60,7 @@ namespace Carpool.BLL.Services.Schedule
 
             await _scheduleRepository.SavePreSchedule(schedule);
 
-            await _messageSender.SendEvent(CreateInvitedRideEvent(schedule));
+            await _messageSender.SendInvitedRideEvent(CreateInvitedRideEvent(schedule));
 
             return Result.Ok();
         }
@@ -115,7 +115,7 @@ namespace Carpool.BLL.Services.Schedule
             await _scheduleRepository.AcceptSchedule(scheduleId);
             await _rideRepository.DeleteRideRequest(schedule.CampusId, schedule.StudentId);
 
-            await _messageSender.SendEvent(CreateSaveTripEvent(schedule));
+            await _messageSender.SendSaveTripEvent(CreateSaveTripEvent(schedule));
 
             return Result.Ok();
         }
@@ -130,7 +130,7 @@ namespace Carpool.BLL.Services.Schedule
             await _scheduleRepository.RejectSchedule(scheduleId);
             var rejectedSchedule = await _scheduleRepository.GetSchedule(scheduleId);
 
-            await _messageSender.SendEvent(CreateDeclinedEvent(rejectedSchedule));
+            await _messageSender.SendDeclinedRideEvent(CreateDeclinedEvent(rejectedSchedule));
 
             return Result.Ok();
         }
@@ -148,7 +148,6 @@ namespace Carpool.BLL.Services.Schedule
 
         private SaveTripEvent CreateSaveTripEvent(DAL.Domain.Schedule schedule)
         {
-            var driver = _driverService.GetDriverBasicInfos(schedule.DriverId);
             return new SaveTripEvent()
             {
                 DriverId = schedule.DriverId,
@@ -166,9 +165,9 @@ namespace Carpool.BLL.Services.Schedule
             return new InvitedRideEvent()
             {
                 DriverId = schedule.DriverId,
-                StudentId = schedule.StudentId,
                 RidePrice = schedule.RidePrice,
-                ScheduleTime = schedule.ScheduleTime
+                ScheduleTime = schedule.ScheduleTime,
+                StudentId = schedule.StudentId
             };
         }
 

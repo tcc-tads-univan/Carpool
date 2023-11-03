@@ -1,4 +1,5 @@
-﻿using Carpool.DAL.Infrastructure.Services.Common;
+﻿using Carpool.DAL.Infrastructure.Messaging;
+using Carpool.DAL.Infrastructure.Services.Common;
 using Carpool.DAL.Infrastructure.Services.Driver;
 using Carpool.DAL.Infrastructure.Services.Student;
 using Carpool.DAL.Persistence.Redis;
@@ -20,6 +21,8 @@ namespace Carpool.DAL
             services.AddScoped<ICampusRepository, CampusRepository>();
             services.AddScoped<IScheduleRepository, ScheduleRepository>();
             services.AddScoped<IRideRepository, RideRepository>();
+
+            services.AddScoped<IMessageSender, MessagingSender>();
 
             services.AddSingleton<IConnectionMultiplexer>(opt => ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")));
 

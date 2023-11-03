@@ -1,7 +1,7 @@
-﻿using Carpool.DAL.Domain;
-using Carpool.DAL.Domain.Event;
-using MassTransit;
+﻿using MassTransit;
 using Microsoft.Extensions.Logging;
+using SharedContracts;
+using SharedContracts.Events;
 
 namespace Carpool.DAL.Infrastructure.Messaging
 {
@@ -15,10 +15,22 @@ namespace Carpool.DAL.Infrastructure.Messaging
             _logger = logger;
         }
 
-        public async Task SendEvent(BaseEvent messageEvent)
+        public async Task SendDeclinedRideEvent(DeclinedRideEvent messageEvent)
         {
-            await _publish.Publish(messageEvent);
-            _logger.LogInformation("Message sent: " + messageEvent.GetType());
+            await _publish.Publish(messageEvent, e => e.SetRoutingKey(messageEvent.GetType().Name));
+            _logger.LogInformation("DeclinedRideEvent sent!");
+        }
+
+        public async Task SendInvitedRideEvent(InvitedRideEvent messageEvent)
+        {
+            await _publish.Publish(messageEvent, e => e.SetRoutingKey(messageEvent.GetType().Name));
+            _logger.LogInformation("InvitedRideEvent sent!");
+        }
+
+        public async Task SendSaveTripEvent(SaveTripEvent messageEvent)
+        {
+            await _publish.Publish(messageEvent, e => e.SetRoutingKey(messageEvent.GetType().Name));
+            _logger.LogInformation("InvitedRideEvent sent!");
         }
     }
 }

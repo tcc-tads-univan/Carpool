@@ -8,7 +8,7 @@ namespace Carpool.DAL.Persistence.Relational.Context
         public CarpoolContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<CarpoolContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\carpool; Integrated Security=true; Initial Catalog=Carpool;");
+            optionsBuilder.UseSqlServer("Server=tcp:tccunivanfinal.database.windows.net,1433;Initial Catalog=carpool-service;Persist Security Info=False;User ID=tccunivan;Password=Project!123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             return new CarpoolContext(optionsBuilder.Options);
         }
     }

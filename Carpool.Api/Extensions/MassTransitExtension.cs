@@ -1,4 +1,6 @@
 ﻿using MassTransit;
+using RabbitMQ.Client;
+using SharedContracts.Events;
 
 namespace Carpool.Api.Extensions
 {
@@ -12,6 +14,11 @@ namespace Carpool.Api.Extensions
                 x.UsingRabbitMq((context, busFactoryConfigurator) =>
                 {
                     busFactoryConfigurator.Host(configuration.GetConnectionString("RabbitMq"));
+
+                    busFactoryConfigurator.Message<BaseCarpoolEvent>(e => e.SetEntityName(BaseCarpoolEvent.exchageName));
+                    busFactoryConfigurator.Publish<BaseCarpoolEvent>(e => {
+                        e.ExchangeType = ExchangeType.Direct;
+                    });
                 });
             });
         }
