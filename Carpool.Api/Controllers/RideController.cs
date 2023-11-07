@@ -3,6 +3,7 @@ using Carpool.Api.Contracts.Ride.Request;
 using Carpool.Api.Contracts.Ride.Response;
 using Carpool.BLL.Services.Ride;
 using Carpool.BLL.Services.Ride.Models.Command;
+using Carpool.BLL.Services.Ride.Models.Result;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -69,9 +70,16 @@ namespace Carpool.Api.Controllers
         [Route("calculate-route")]
         public async Task<IActionResult> CalculateRideRoute(RouteRequest routeRequest)
         {
-            //Dependency -> Route Service - GRPC
-            await Task.CompletedTask;
-            return Ok();
+            var routeResult = await _rideService.CalculateRideRoute(routeRequest.CampusId,
+                routeRequest.StudentId,
+                routeRequest.DriverId);
+
+            if (routeResult.IsSuccess)
+            {
+                var rideResponse = _mapper.Map<RouteResponse>(routeResult.Value);
+                return Ok(rideResponse);
+            }
+            return ProblemDetails(routeResult.Errors);
         }
 
 

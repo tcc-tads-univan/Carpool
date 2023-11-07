@@ -15,6 +15,7 @@ namespace Carpool.Api.MapperConfiguration
             config.NewConfig<RideDeleteRequest, RideDeleteCommand>();
             config.NewConfig<RideResult, RideResponse>();
             config.NewConfig<RideStudentResult, RideStudentResponse>();
+            config.NewConfig<RouteResult, RouteResponse>();
         }
     }
 }

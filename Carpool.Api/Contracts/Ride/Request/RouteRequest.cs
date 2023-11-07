@@ -8,5 +8,7 @@ namespace Carpool.Api.Contracts.Ride.Request
         public int DriverId { get; set; }
         [Required]
         public int StudentId { get; set; }
+        [Required]
+        public int CampusId { get; set; }
     }
 }
