@@ -5,5 +5,6 @@
         public int StudentId { get; set; }
         public int DriverId { get; set; }
         public int CampusId { get; set; }
+        public decimal Price { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Carpool.DAL.Infrastructure.Messaging;
 using Carpool.DAL.Infrastructure.Services.Common;
 using Carpool.DAL.Infrastructure.Services.Driver;
+using Carpool.DAL.Infrastructure.Services.Route;
 using Carpool.DAL.Infrastructure.Services.Student;
 using Carpool.DAL.Persistence.Redis;
 using Carpool.DAL.Persistence.Redis.Interfaces;
@@ -32,6 +33,11 @@ namespace Carpool.DAL
             services.AddHttpClient<IApiCaller, ApiCaller>(opt =>
             {
                 opt.BaseAddress = new Uri(configuration.GetSection("UnivanService")["Url"]);
+            });
+
+            services.AddHttpClient<IRouteService, RouteService>(opt =>
+            {
+                opt.BaseAddress = new Uri(configuration.GetSection("RouteService")["Url"]);
             });
 
             services.AddScoped<IStudentService, StudentService>();

@@ -55,7 +55,7 @@ namespace Carpool.BLL.Services.Schedule
                 ScheduleTime = studentRide.ScheduleTime,
                 RequestDate = DateTime.Now,
                 CampusId = command.CampusId,
-                RidePrice = 12.23M
+                RidePrice = command.Price
             };
 
             await _scheduleRepository.SavePreSchedule(schedule);
