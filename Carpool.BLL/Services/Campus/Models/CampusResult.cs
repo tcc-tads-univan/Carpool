@@ -6,6 +6,7 @@
         public String CampusName { get; set; }
         public String LineAddress { get; set; }
         public String Neighborhood { get; set; }
+        public String PlaceId { get; set; }
         public String CEP { get; set; }
         public CollegeResult College { get; set; }
     }

@@ -5,6 +5,7 @@
         public int CampusId { get; set; }
         public String CampusName { get; set; }
         public String CompleteLineAddress { get; set; }
+        public String PlaceId { get; set; }
         public CollegeResult College { get; set; }
     }
     public class CollegeResult

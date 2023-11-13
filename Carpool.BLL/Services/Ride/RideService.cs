@@ -107,6 +107,7 @@ namespace Carpool.BLL.Services.Ride
                 StudentId = r.StudentId,
                 Name = r.StudentName,
                 ScheduleTime = r.ScheduleTime,
+                CampusPlaceId = r.CampusPlaceId,
                 LineAddress = r.StudentLineAddress,
                 PhoneNumber = r.PhoneNumber,
                 PhotoUrl = r.PhotoUrl,

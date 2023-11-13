@@ -10,6 +10,7 @@ namespace Carpool.BLL.Services.Schedule
         Task<Result> StudentAcceptSchedule(int scheduleId);
         Task<Result> StudentRejectSchedule(int scheduleId);
         Task<Result<ScheduleResult>> GetStudentPreSchedule(int studentId);
+        Task<Result<List<ScheduleResult>>> GetTodayAcceptedScheduleByDriverId(int driverId);
         Task<Result<ScheduleResult>> GetSchedule(int scheduleId);
     }
 }

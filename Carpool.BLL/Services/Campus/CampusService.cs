@@ -13,20 +13,32 @@ namespace Carpool.BLL.Services.Campus
         public async Task<List<CampusResult>> GetAllCampi()
         {
             var campi = await _campusRepository.GetAllCampi();
-            var campusResult = campi.Select(c => new CampusResult
+            var campusResult = campi.Select(c => MapToResult(c)).ToList();
+            return campusResult;
+        }
+
+        public async Task<CampusResult> GetCampus(int campusId)
+        {
+            var campi = await _campusRepository.GetCampus(campusId);
+            return MapToResult(campi);
+        }
+
+        private CampusResult MapToResult(DAL.Domain.Campus campi)
+        {
+            return new CampusResult
             {
-                CampusId = c.CampusId,
-                CampusName = c.CampusName,
-                CEP = c.CEP,
-                LineAddress = c.LineAddress,
-                Neighborhood = c.Neighborhood,
+                CampusId = campi.CampusId,
+                CampusName = campi.CampusName,
+                CEP = campi.CEP,
+                PlaceId = campi.PlaceId,
+                LineAddress = campi.LineAddress,
+                Neighborhood = campi.Neighborhood,
                 College = new CollegeResult
                 {
-                    Acronym = c.College.Acronym,
-                    CollegeName = c.College.CollegeName
+                    Acronym = campi.College.Acronym,
+                    CollegeName = campi.College.CollegeName
                 }
-            }).ToList();
-            return campusResult;
+            };
         }
     }
 }

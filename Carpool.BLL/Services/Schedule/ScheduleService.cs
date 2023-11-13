@@ -8,6 +8,7 @@ using Carpool.DAL.Infrastructure.Services.Student;
 using Carpool.DAL.Persistence.Redis.Interfaces;
 using Carpool.DAL.Persistence.Relational.Repository.Interfaces;
 using FluentResults;
+using MassTransit.Initializers;
 using SharedContracts;
 
 namespace Carpool.BLL.Services.Schedule
@@ -31,7 +32,7 @@ namespace Carpool.BLL.Services.Schedule
         public async Task<Result> CreatePreSchedule(ScheduleCreateCommand command)
         {
             var studentRide = await _rideRepository.GetStudentRideRequest(command.CampusId, command.StudentId);
-
+            
             if (studentRide is null)
             {
                 return Result.Fail(new RideNotFound());
@@ -189,6 +190,19 @@ namespace Carpool.BLL.Services.Schedule
                     VehiclePlate = driver.VehiclePlate
                 }
             };
+        }
+
+        public async Task<Result<List<ScheduleResult>>> GetTodayAcceptedScheduleByDriverId(int driverId)
+        {
+            var driverSchedulesAccepted = await _scheduleRepository.GetTodayAcceptedScheduleByDriverId(driverId);
+            var driver = await _driverService.GetDriverBasicInfos(driverId);
+            if (driver is null)
+            {
+                return Result.Fail(new DriverServiceUnavailable());
+            }
+
+            var schedules = driverSchedulesAccepted.Select(dsa => MapScheduleResult(driver, dsa)).ToList();
+            return Result.Ok(schedules);
         }
     }
 }

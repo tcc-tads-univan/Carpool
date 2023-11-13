@@ -95,5 +95,21 @@ namespace Carpool.Api.Controllers
             return ProblemDetails(scheduleResult.Errors);
         }
 
+        [HttpGet]
+        [Route("accepted")]
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ScheduleResponse))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+        public async Task<IActionResult> GetAcceptedScheduleByDriverId([FromQuery] int driverId)
+        {
+            var scheduleResult = await _scheduleService.GetTodayAcceptedScheduleByDriverId(driverId);
+            if (scheduleResult.IsSuccess)
+            {
+                var scheduleResponse = _mapper.Map<List<ScheduleResponse>>(scheduleResult.Value);
+                return Ok(scheduleResponse);
+            }
+
+            return ProblemDetails(scheduleResult.Errors);
+        }
+
     }
 }
