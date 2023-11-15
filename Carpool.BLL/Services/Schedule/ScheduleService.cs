@@ -171,6 +171,7 @@ namespace Carpool.BLL.Services.Schedule
                 StudentId = schedule.StudentId,
                 FinalDestination = schedule.Destination,
                 InitialDestination = schedule.Origin,
+                ScheduleId = schedule.ScheduleId,
                 Price = schedule.RidePrice,
                 DriverName = schedule.DriverName,
                 StudentName = schedule.StudentName
