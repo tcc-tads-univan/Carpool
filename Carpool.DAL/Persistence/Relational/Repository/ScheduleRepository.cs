@@ -55,9 +55,10 @@ namespace Carpool.DAL.Persistence.Relational.Repository
 
         public Task<List<Schedule>> GetTodayAcceptedScheduleByDriverId(int driverId)
         {
+            var today = DateTime.Now.Date;
             return _schedule.Where(s => s.DriverId == driverId 
                 && s.Accepted.Value 
-                && s.RequestDate.Date == DateTime.Now.Date).ToListAsync();
+                && s.RequestDate.Date == today).ToListAsync();
         }
     }
 }

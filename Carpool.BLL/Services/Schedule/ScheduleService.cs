@@ -5,6 +5,7 @@ using Carpool.DAL.Infrastructure.Messaging;
 using Carpool.DAL.Infrastructure.Services.Driver;
 using Carpool.DAL.Infrastructure.Services.Driver.Model;
 using Carpool.DAL.Infrastructure.Services.Student;
+using Carpool.DAL.Infrastructure.Services.Student.Model;
 using Carpool.DAL.Persistence.Redis.Interfaces;
 using Carpool.DAL.Persistence.Relational.Repository.Interfaces;
 using FluentResults;
@@ -136,6 +137,21 @@ namespace Carpool.BLL.Services.Schedule
             return Result.Ok();
         }
 
+        public async Task<Result<List<ScheduleAcceptedResult>>> GetTodayAcceptedScheduleByDriverId(int driverId)
+        {
+            var driverSchedulesAccepted = await _scheduleRepository.GetTodayAcceptedScheduleByDriverId(driverId);
+
+            var schedulesAccepted = new List<ScheduleAcceptedResult>();
+
+            foreach(var schedule in driverSchedulesAccepted)
+            {
+                var student = await _studentService.GetStudentBasicInfos(schedule.StudentId);
+                schedulesAccepted.Add(MapScheduleAcceptedResult(student, schedule));
+            }
+
+            return Result.Ok(schedulesAccepted);
+        }
+
         private DeclinedRideEvent CreateDeclinedEvent(DAL.Domain.Schedule rejectedSchedule)
         {
             return new DeclinedRideEvent()
@@ -190,19 +206,26 @@ namespace Carpool.BLL.Services.Schedule
                     VehiclePlate = driver.VehiclePlate
                 }
             };
-        }
-
-        public async Task<Result<List<ScheduleResult>>> GetTodayAcceptedScheduleByDriverId(int driverId)
+        }  
+        
+        private ScheduleAcceptedResult MapScheduleAcceptedResult(Student student, DAL.Domain.Schedule schedule)
         {
-            var driverSchedulesAccepted = await _scheduleRepository.GetTodayAcceptedScheduleByDriverId(driverId);
-            var driver = await _driverService.GetDriverBasicInfos(driverId);
-            if (driver is null)
+            return new ScheduleAcceptedResult()
             {
-                return Result.Fail(new DriverServiceUnavailable());
-            }
-
-            var schedules = driverSchedulesAccepted.Select(dsa => MapScheduleResult(driver, dsa)).ToList();
-            return Result.Ok(schedules);
+                ScheduleId = schedule.ScheduleId,
+                DestinationAddress = schedule.Destination,
+                OriginAddress = schedule.Origin,
+                ScheduleTime = schedule.ScheduleTime,
+                RidePrice = schedule.RidePrice,
+                Student = new StudentResult()
+                {
+                    StudentId = schedule.StudentId,
+                    Name = student.Name,
+                    PhoneNumber = student.PhoneNumber,
+                    PhotoUrl = student.PhotoUrl,
+                    Rating = student.Rating,
+                }
+            };
         }
     }
 }

@@ -97,14 +97,14 @@ namespace Carpool.Api.Controllers
 
         [HttpGet]
         [Route("accepted")]
-        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ScheduleResponse))]
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ScheduleAcceptedResponse))]
         [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> GetAcceptedScheduleByDriverId([FromQuery] int driverId)
         {
             var scheduleResult = await _scheduleService.GetTodayAcceptedScheduleByDriverId(driverId);
             if (scheduleResult.IsSuccess)
             {
-                var scheduleResponse = _mapper.Map<List<ScheduleResponse>>(scheduleResult.Value);
+                var scheduleResponse = _mapper.Map<List<ScheduleAcceptedResponse>>(scheduleResult.Value);
                 return Ok(scheduleResponse);
             }
 
