@@ -9,7 +9,8 @@ namespace Carpool.DAL.Persistence.Relational.Repository.Interfaces
         Task<List<Schedule>> GetTodayAcceptedScheduleByDriverId(int driverId);
         Task AcceptSchedule(int scheduleId);
         Task RejectSchedule(int scheduleId);
+        Task CompleteSchedule(int scheduleId);
         Task<Schedule> GetSchedule(int scheduleId);
-        Task<bool> isValidSchedule(int scheduleId);
+        Task<bool> IsValidSchedule(int scheduleId);
     }
 }

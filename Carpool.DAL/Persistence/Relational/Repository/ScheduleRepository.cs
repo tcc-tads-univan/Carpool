@@ -48,7 +48,7 @@ namespace Carpool.DAL.Persistence.Relational.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> isValidSchedule(int scheduleId)
+        public async Task<bool> IsValidSchedule(int scheduleId)
         {
             return await _schedule.AnyAsync(s => s.ScheduleId == scheduleId && s.Accepted == null);
         }
@@ -58,7 +58,15 @@ namespace Carpool.DAL.Persistence.Relational.Repository
             var today = DateTime.Now.Date;
             return _schedule.Where(s => s.DriverId == driverId 
                 && s.Accepted.Value 
+                && !s.Completed.HasValue
                 && s.RequestDate.Date == today).ToListAsync();
+        }
+
+        public async Task CompleteSchedule(int scheduleId)
+        {
+            var schedule = await _schedule.SingleOrDefaultAsync(s => s.ScheduleId == scheduleId);
+            schedule.Completed = true;
+            await _context.SaveChangesAsync();
         }
     }
 }

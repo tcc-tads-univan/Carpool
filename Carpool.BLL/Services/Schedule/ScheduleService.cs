@@ -11,6 +11,7 @@ using Carpool.DAL.Persistence.Relational.Repository.Interfaces;
 using FluentResults;
 using MassTransit.Initializers;
 using SharedContracts;
+using SharedContracts.Events;
 
 namespace Carpool.BLL.Services.Schedule
 {
@@ -107,7 +108,7 @@ namespace Carpool.BLL.Services.Schedule
 
         public async Task<Result> StudentAcceptSchedule(int scheduleId)
         {
-            if(!(await _scheduleRepository.isValidSchedule(scheduleId)))
+            if(!(await _scheduleRepository.IsValidSchedule(scheduleId)))
             {
                 return Result.Fail(new ScheduleInvalid());
             }
@@ -124,7 +125,7 @@ namespace Carpool.BLL.Services.Schedule
 
         public async Task<Result> StudentRejectSchedule(int scheduleId)
         {
-            if (!(await _scheduleRepository.isValidSchedule(scheduleId)))
+            if (!(await _scheduleRepository.IsValidSchedule(scheduleId)))
             {
                 return Result.Fail(new ScheduleInvalid());
             }
@@ -178,6 +179,14 @@ namespace Carpool.BLL.Services.Schedule
             };
         }
 
+        private CompleteTripEvent CreateCompleteTripEvent(int scheduleId)
+        {
+            return new CompleteTripEvent()
+            {
+                ScheduleId = scheduleId
+            };
+        }
+
         private InvitedRideEvent CreateInvitedRideEvent(DAL.Domain.Schedule schedule)
         {
             return new InvitedRideEvent()
@@ -227,6 +236,21 @@ namespace Carpool.BLL.Services.Schedule
                     Rating = student.Rating,
                 }
             };
+        }
+
+        public async Task<Result> CompleteSchedule(int scheduleId)
+        {
+            var schedule = await _scheduleRepository.GetSchedule(scheduleId);
+            if (schedule is null)
+            {
+                return Result.Fail(new ScheduleInvalid());
+            }
+
+            await _scheduleRepository.CompleteSchedule(scheduleId);
+
+            await _messageSender.SendCompleteRideEvent(CreateCompleteTripEvent(schedule.ScheduleId));
+
+            return Result.Ok();
         }
     }
 }
