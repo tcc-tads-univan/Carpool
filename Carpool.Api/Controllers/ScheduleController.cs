@@ -64,6 +64,21 @@ namespace Carpool.Api.Controllers
             return ProblemDetails(result.Errors);
         }
 
+        [HttpPut]
+        [Route("{scheduleId}/complete")]
+        [SwaggerResponse(StatusCodes.Status204NoContent)]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+        public async Task<IActionResult> CompleteSchedule(int scheduleId)
+        {
+            var result = await _scheduleService.CompleteSchedule(scheduleId);
+            if (result.IsSuccess)
+            {
+                return NoContent();
+            }
+
+            return ProblemDetails(result.Errors);
+        }
+
         [HttpGet]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ScheduleResponse))]
         [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
@@ -89,6 +104,22 @@ namespace Carpool.Api.Controllers
             if (scheduleResult.IsSuccess)
             {
                 var scheduleResponse = _mapper.Map<ScheduleResponse>(scheduleResult.Value);
+                return Ok(scheduleResponse);
+            }
+
+            return ProblemDetails(scheduleResult.Errors);
+        }
+
+        [HttpGet]
+        [Route("accepted")]
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(ScheduleAcceptedResponse))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+        public async Task<IActionResult> GetAcceptedScheduleByDriverId([FromQuery] int driverId)
+        {
+            var scheduleResult = await _scheduleService.GetTodayAcceptedScheduleByDriverId(driverId);
+            if (scheduleResult.IsSuccess)
+            {
+                var scheduleResponse = _mapper.Map<List<ScheduleAcceptedResponse>>(scheduleResult.Value);
                 return Ok(scheduleResponse);
             }
 

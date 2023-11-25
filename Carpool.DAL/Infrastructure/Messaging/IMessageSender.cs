@@ -8,5 +8,6 @@ namespace Carpool.DAL.Infrastructure.Messaging
         Task SendInvitedRideEvent(InvitedRideEvent messageEvent);
         Task SendSaveTripEvent(SaveTripEvent messageEvent);
         Task SendDeclinedRideEvent(DeclinedRideEvent messageEvent);
+        Task SendCompleteRideEvent(CompleteTripEvent messageEvent);
     }
 }

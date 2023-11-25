@@ -15,6 +15,12 @@ namespace Carpool.DAL.Infrastructure.Messaging
             _logger = logger;
         }
 
+        public async Task SendCompleteRideEvent(CompleteTripEvent messageEvent)
+        {
+            await _publish.Publish(messageEvent, e => e.SetRoutingKey(messageEvent.GetType().Name));
+            _logger.LogInformation("CompleteTripEvent sent!");
+        }
+
         public async Task SendDeclinedRideEvent(DeclinedRideEvent messageEvent)
         {
             await _publish.Publish(messageEvent, e => e.SetRoutingKey(messageEvent.GetType().Name));

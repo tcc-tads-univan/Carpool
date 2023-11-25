@@ -1,6 +1,8 @@
 ﻿using Carpool.BLL.Common.Errors;
 using Carpool.BLL.Services.Ride.Models.Command;
 using Carpool.BLL.Services.Ride.Models.Result;
+using Carpool.DAL.Infrastructure.Services.Route;
+using Carpool.DAL.Infrastructure.Services.Route.Model;
 using Carpool.DAL.Infrastructure.Services.Student;
 using Carpool.DAL.Persistence.Redis.Interfaces;
 using Carpool.DAL.Persistence.Relational.Repository.Interfaces;
@@ -13,16 +15,33 @@ namespace Carpool.BLL.Services.Ride
         private readonly IRideRepository _rideRepository;
         private readonly IStudentService _studentService;
         private readonly ICampusRepository _campusRepository;
-        public RideService(IRideRepository rideRepository, ICampusRepository campusRepository, IStudentService studentService)
+        private readonly IRouteService _routeService;
+        public RideService(IRideRepository rideRepository, ICampusRepository campusRepository, IStudentService studentService, IRouteService routeService)
         {
             _rideRepository = rideRepository;
             _campusRepository = campusRepository;
             _studentService = studentService;
+            _routeService = routeService;
         }
 
-        public Task CalculateRideRoute()
+        public async Task<Result<RouteResult>> CalculateRideRoute(int campusId, int studentId, int driverId)
         {
-            throw new NotImplementedException();
+            var studentRide = await _rideRepository.GetStudentRideRequest(campusId, studentId);
+
+            if (studentRide is null)
+            {
+                return Result.Fail(new RideNotFound());
+            }
+
+            var routeRequest = new RouteRequest()
+            {
+                DriverId = driverId,
+                CampusPlaceId = studentRide.CampusPlaceId,
+                StudentPlaceId = studentRide.StudentPlaceId
+            };
+
+            var routeMap = await _routeService.CalculatePath(routeRequest);
+            return Result.Ok(new RouteResult(routeMap.GooglePath));
         }
 
         public async Task<Result> CancelStudentRideRequest(RideDeleteCommand rideDeleteCommand)
@@ -67,8 +86,10 @@ namespace Carpool.BLL.Services.Ride
                 StudentName = student.Name,
                 PhoneNumber = student.PhoneNumber,
                 CampusLineAddress = campus.LineAddress,
+                CampusPlaceId = campus.PlaceId,
                 CampusName = campus.CampusName,
                 StudentLineAddress = student.LineAddress,
+                StudentPlaceId = student.PlaceId,
                 PhotoUrl = student.PhotoUrl,
                 Rating = student.Rating,
                 ScheduleTime = rideCreateCommand.ScheduleTime
@@ -86,6 +107,7 @@ namespace Carpool.BLL.Services.Ride
                 StudentId = r.StudentId,
                 Name = r.StudentName,
                 ScheduleTime = r.ScheduleTime,
+                CampusPlaceId = r.CampusPlaceId,
                 LineAddress = r.StudentLineAddress,
                 PhoneNumber = r.PhoneNumber,
                 PhotoUrl = r.PhotoUrl,

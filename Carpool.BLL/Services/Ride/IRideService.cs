@@ -8,7 +8,7 @@ namespace Carpool.BLL.Services.Ride
     {
         Task<Result> CreateStudentRideRequest(RideCreateCommand rideCreateCommand);
         Task<Result> CancelStudentRideRequest(RideDeleteCommand rideDeleteCommand);
-        Task CalculateRideRoute();
+        Task<Result<RouteResult>> CalculateRideRoute(int campusId, int studentId, int driverId);
         Task<List<RideResult>> GetAllRideRequestsByCampus(int campusId);
         Task<Result<RideStudentResult>> GetRideRequestByStudent(int campusId, int studentId);
     }

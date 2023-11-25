@@ -12,6 +12,7 @@ namespace Carpool.Api.MapperConfiguration
         {
             config.NewConfig<ScheduleCreateRequest, ScheduleCreateCommand>();
             config.NewConfig<ScheduleResult, ScheduleResponse>();
+            config.NewConfig<ScheduleAcceptedResult, ScheduleAcceptedResponse>();
         }
     }
 }

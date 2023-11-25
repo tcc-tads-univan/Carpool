@@ -9,7 +9,9 @@ namespace Carpool.BLL.Services.Schedule
         Task<Result> CreatePreSchedule(ScheduleCreateCommand command);
         Task<Result> StudentAcceptSchedule(int scheduleId);
         Task<Result> StudentRejectSchedule(int scheduleId);
+        Task<Result> CompleteSchedule(int scheduleId);
         Task<Result<ScheduleResult>> GetStudentPreSchedule(int studentId);
+        Task<Result<List<ScheduleAcceptedResult>>> GetTodayAcceptedScheduleByDriverId(int driverId);
         Task<Result<ScheduleResult>> GetSchedule(int scheduleId);
     }
 }

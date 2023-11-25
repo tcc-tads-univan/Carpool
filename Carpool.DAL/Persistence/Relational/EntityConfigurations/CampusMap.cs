@@ -14,6 +14,7 @@ namespace Carpool.DAL.Persistence.Relational.EntityConfigurations
             builder.Property(c => c.LineAddress).IsRequired().HasMaxLength(120);
             builder.Property(c => c.Neighborhood).IsRequired().HasMaxLength(32);
             builder.Property(c => c.CEP).IsRequired().HasMaxLength(10);
+            builder.Property(c => c.PlaceId).IsRequired().HasMaxLength(32);
         }
     }
 }

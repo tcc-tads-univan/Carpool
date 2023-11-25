@@ -14,5 +14,6 @@
         public String Destination { get; set; }
         public decimal RidePrice { get; set; }
         public bool? Accepted { get; set; }
+        public bool? Completed { get; set; }
     }
 }

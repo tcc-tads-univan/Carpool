@@ -18,5 +18,8 @@ namespace Carpool.DAL.Infrastructure.Services.Student.Model
 
         [JsonPropertyName("lineAddress")]
         public string LineAddress { get; set; }
+
+        [JsonPropertyName("placeId")]
+        public string PlaceId { get; set; }
     }
 }

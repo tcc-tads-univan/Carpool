@@ -10,5 +10,9 @@ namespace Carpool.Api.Contracts.Schedule.Request
         public int DriverId { get; set; }
         [Required]
         public int CampusId { get; set; }
+
+        [Required]
+        [RegularExpression(@"^\d+.\d{2}$", ErrorMessage = "Invalid Price Format")]
+        public decimal Price { get; set; }
     }
 }
