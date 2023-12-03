@@ -22,7 +22,7 @@ namespace Carpool.DAL.Infrastructure.Services.Driver
                 key,
                 entry =>
                 {
-                    entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(20));
+                    entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(2));
                     return _decorated.GetDriverBasicInfos(driverId);
                 });
         }

@@ -20,7 +20,7 @@ namespace Carpool.DAL.Infrastructure.Services.Student
                 key,
                 entry =>
                 {
-                    entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
+                    entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(2));
                     return _decorated.GetStudentBasicInfos(studentId);
                 });
         }
